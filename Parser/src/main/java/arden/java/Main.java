@@ -1,14 +1,12 @@
 package arden.java;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 
+@Slf4j
 public class Main {
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
-
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.load();
         JsonToXmlParser jsonToXmlParser = new JsonToXmlParser(dotenv);
