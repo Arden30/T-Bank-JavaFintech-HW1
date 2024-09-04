@@ -18,8 +18,8 @@ public class JsonToXmlParser {
     private final Dotenv dotenv;
 
     public void toXml(Path jsonFile) {
-        JsonParser<City> jp = new JsonParser<>(City.class);
-        City parsed = jp.parse(new File(jsonFile.toString()));
+        JsonParser<City> jsonParser = new JsonParser<>(City.class);
+        City parsed = jsonParser.parse(new File(jsonFile.toString()));
         XmlMapping<City> xmlMapping = new XmlMapping<>();
 
         String filename = jsonFile.getFileName().toString();
