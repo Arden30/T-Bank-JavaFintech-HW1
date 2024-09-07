@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,5 +59,20 @@ public class CustomLinkedListTest {
         assertThat(list.contains(1)).isTrue();
         assertThat(list.contains(3)).isTrue();
         assertThat(list.contains(5)).isTrue();
+    }
+
+    @Test
+    @DisplayName("Stream reduce test")
+    public void testStreamReduce() {
+        CustomLinkedList<Integer> customLinkedList = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+                .reduce(new CustomLinkedList<>(),
+                        (list, element) -> {
+                            list.add(element);
+                            return list;
+                        },
+                        (list1, list2) -> list1);
+
+        assertThat(customLinkedList.size()).isEqualTo(10);
+        assertThat(customLinkedList.get(0)).isEqualTo(1);
     }
 }

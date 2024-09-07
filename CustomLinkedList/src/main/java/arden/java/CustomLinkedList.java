@@ -95,6 +95,15 @@ public class CustomLinkedList<T> {
         }
     }
 
+    public void display() {
+        Node<T> node = head;
+        while (node != null) {
+            System.out.print(node.data + " -> ");
+            node = node.next;
+        }
+        System.out.print("null");
+    }
+
     public int size() {
         return size;
     }
