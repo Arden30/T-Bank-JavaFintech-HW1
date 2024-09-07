@@ -20,5 +20,8 @@ jobs:
           distribution: 'oracle'
           cache: gradle
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       - name: Build and Test with Gradle
         run: ./gradlew build --no-daemon
