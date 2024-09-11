@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 public class CustomLinkedListTest {
@@ -23,8 +24,10 @@ public class CustomLinkedListTest {
         list.add(10);
         list.add(20);
 
-        assertThat(list.get(0)).isEqualTo(10);
-        assertThat(list.get(1)).isEqualTo(20);
+        assertAll("Check elements",
+                () -> assertThat(list.get(0)).isEqualTo(10),
+                () -> assertThat(list.get(1)).isEqualTo(20)
+        );
     }
 
     @Test
@@ -36,9 +39,11 @@ public class CustomLinkedListTest {
 
         list.remove(20);
 
-        assertThat(list.get(0)).isEqualTo(10);
-        assertThat(list.get(1)).isEqualTo(30);
-        assertThat(list.size()).isEqualTo(2);
+        assertAll("Check removing",
+                () -> assertThat(list.get(0)).isEqualTo(10),
+                () -> assertThat(list.get(1)).isEqualTo(30),
+                () -> assertThat(list.size()).isEqualTo(2)
+        );
     }
 
     @Test
@@ -47,8 +52,9 @@ public class CustomLinkedListTest {
         list.add(10);
         list.add(20);
 
-        assertThat(list.contains(20)).isTrue();
-        assertThat(list.contains(30)).isFalse();
+        assertAll("Check containing",
+                () -> assertThat(list.contains(20)).isTrue(),
+                () -> assertThat(list.contains(30)).isFalse());
     }
 
     @Test
@@ -56,9 +62,10 @@ public class CustomLinkedListTest {
     public void testAddAll() {
         list.addAll(List.of(1, 3, 5));
 
-        assertThat(list.contains(1)).isTrue();
-        assertThat(list.contains(3)).isTrue();
-        assertThat(list.contains(5)).isTrue();
+        assertAll("Check containing",
+                () -> assertThat(list.contains(1)).isTrue(),
+                () -> assertThat(list.contains(3)).isTrue(),
+                () -> assertThat(list.contains(5)).isTrue());
     }
 
     @Test
@@ -70,9 +77,13 @@ public class CustomLinkedListTest {
                             list.add(element);
                             return list;
                         },
-                        (list1, list2) -> list1);
+                        (list1, list2) -> {
+                            list1.addAll(list2.toList());
+                            return list1;
+                        });
 
-        assertThat(customLinkedList.size()).isEqualTo(10);
-        assertThat(customLinkedList.get(0)).isEqualTo(1);
+        assertAll("Check stream reduce",
+                () -> assertThat(customLinkedList.size()).isEqualTo(10),
+                () -> assertThat(customLinkedList.get(0)).isEqualTo(1));
     }
 }

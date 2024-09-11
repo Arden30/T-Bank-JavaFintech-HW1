@@ -10,7 +10,10 @@ public class Main {
                             list.add(element);
                             return list;
                         },
-                        (list1, list2) -> list1);
+                        (list1, list2) -> {
+                            list1.addAll(list2.toList());
+                            return list1;
+                        });
 
         customLinkedList.display();
     }
