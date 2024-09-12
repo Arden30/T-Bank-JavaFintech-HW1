@@ -1,0 +1,54 @@
+name: Build with tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'oracle'
+          cache: gradle
+
+      # Grant permission to execute the gradlew script
+      - name: Grant execute permission for gradlew
+        working-directory: ./CustomLinkedList
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle Wrapper
+        working-directory: ./CustomLinkedList
+        run: ./gradlew build
+
+  test:
+      runs-on: ubuntu-latest
+      name: Test
+      needs: build
+      
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-java@v3
+          with:
+            java-version: '21'
+            distribution: 'oracle'
+            cache: gradle
+
+        # Grant permission to execute the gradlew script
+        - name: Grant execute permission for gradlew
+          working-directory: ./CustomLinkedList
+          run: chmod +x ./gradlew
+
+        # Run JUnit tests
+        - name: Run Test
+          working-directory: ./CustomLinkedList
+          run: ./gradlew test

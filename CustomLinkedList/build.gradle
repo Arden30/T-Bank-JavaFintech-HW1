@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group = 'arden.java'
+version = '1.0-SNAPSHOT'
+
+ext {
+    versions = [
+            testVersion: '5.10.0',
+            assertj: '3.24.2'
+    ]
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:${versions.testVersion}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation("org.assertj:assertj-core:${versions.assertj}")
+}
+
+test {
+    useJUnitPlatform()
+}
