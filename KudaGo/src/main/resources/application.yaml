@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: KudaGo
+
+base-config:
+  url: https://kudago.com/public-api/v1.4/
