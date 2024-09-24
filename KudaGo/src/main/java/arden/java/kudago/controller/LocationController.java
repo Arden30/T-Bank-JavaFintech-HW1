@@ -1,8 +1,8 @@
 package arden.java.kudago.controller;
 
-import arden.java.kudago.aspect.LogTimeExec;
 import arden.java.kudago.dto.Location;
 import arden.java.kudago.service.LocationService;
+import configuration.annotation.logtimexec.LogTimeExec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

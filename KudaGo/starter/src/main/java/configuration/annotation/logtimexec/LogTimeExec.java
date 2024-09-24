@@ -1,4 +1,4 @@
-package arden.java.kudago.aspect;
+package configuration.annotation.logtimexec;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

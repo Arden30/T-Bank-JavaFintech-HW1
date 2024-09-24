@@ -1,4 +1,4 @@
-package arden.java.kudago.aspect;
+package configuration.annotation.logtimexec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Slf4j
 public class LogTimeExecAspect {
-    @Pointcut("@annotation(arden.java.kudago.aspect.LogTimeExec) || @within(arden.java.kudago.aspect.LogTimeExec)")
+    @Pointcut("@annotation(configuration.annotation.logtimexec.LogTimeExec) || @within(configuration.annotation.logtimexec.LogTimeExec)")
     public void hasAnnotation() {}
 
     @Around("hasAnnotation()")
