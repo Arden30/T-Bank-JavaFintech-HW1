@@ -1,5 +1,6 @@
 package arden.java.kudago.controller;
 
+import arden.java.kudago.aspect.LogTimeExec;
 import arden.java.kudago.dto.Category;
 import arden.java.kudago.service.impl.CategoryServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/places/categories")
 @RequiredArgsConstructor
+@LogTimeExec
 public class CategoryController {
     private final CategoryServiceImpl categoryServiceImpl;
 

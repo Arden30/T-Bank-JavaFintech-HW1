@@ -1,5 +1,6 @@
 package arden.java.kudago.controller;
 
+import arden.java.kudago.aspect.LogTimeExec;
 import arden.java.kudago.dto.Location;
 import arden.java.kudago.service.LocationService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
+@LogTimeExec
 public class LocationController {
     private final LocationService locationService;
 

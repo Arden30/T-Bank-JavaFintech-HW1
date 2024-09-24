@@ -7,6 +7,7 @@ plugins {
 group = "arden.java"
 version = "0.0.1-SNAPSHOT"
 
+val aspectVersion: String by project
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -25,6 +26,8 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.aspectj:aspectjweaver:${aspectVersion}")
+	implementation("org.aspectj:aspectjrt:${aspectVersion}")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("org.projectlombok:lombok")
