@@ -1,4 +1,4 @@
-package arden.java.kudago.starter;
+package arden.java.kudago.event;
 
 import arden.java.kudago.service.CategoryService;
 import arden.java.kudago.service.LocationService;
