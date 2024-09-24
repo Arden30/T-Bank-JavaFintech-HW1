@@ -2,7 +2,6 @@ package arden.java.kudago.client;
 
 import arden.java.kudago.config.UrlConfig;
 import arden.java.kudago.dto.Location;
-import arden.java.kudago.repository.StorageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -18,14 +17,14 @@ import java.util.Optional;
 public class LocationRestTemplate {
     private final RestTemplate restTemplate;
     private final UrlConfig urlConfig;
-    private final StorageRepository<String, Location> locationStorage;
 
     public Optional<List<Location>> getLocations() {
         ResponseEntity<List<Location>> response = restTemplate
                 .exchange(urlConfig.url() + "/locations",
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<>() {});
+                        new ParameterizedTypeReference<>() {
+                        });
 
         return Optional.ofNullable(response.getBody());
     }
@@ -35,7 +34,8 @@ public class LocationRestTemplate {
                 .exchange(urlConfig.url() + "/locations/" + slug,
                         HttpMethod.GET,
                         null,
-                        new ParameterizedTypeReference<>() {});
+                        new ParameterizedTypeReference<>() {
+                        });
 
         return Optional.ofNullable(response.getBody());
     }

@@ -1,8 +1,5 @@
 package arden.java.kudago.starter;
 
-import arden.java.kudago.dto.Category;
-import arden.java.kudago.dto.Location;
-import arden.java.kudago.repository.StorageRepository;
 import arden.java.kudago.service.CategoryService;
 import arden.java.kudago.service.LocationService;
 import lombok.RequiredArgsConstructor;
