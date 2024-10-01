@@ -1,6 +1,5 @@
 package arden.java.kudago.client;
 
-import arden.java.kudago.dto.Category;
 import arden.java.kudago.dto.Location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
