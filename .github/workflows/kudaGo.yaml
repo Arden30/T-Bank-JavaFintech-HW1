@@ -1,4 +1,4 @@
-name: Build with tests
+name: Build KudaGo with tests
 
 on:
   workflow_dispatch:
@@ -30,29 +30,6 @@ jobs:
         working-directory: ./KudaGo
         run: ./gradlew build
 
-  test:
-    runs-on: ubuntu-latest
-    name: Test
-    needs: build
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'oracle'
-          cache: gradle
-
-      # Grant permission to execute the gradlew script
-      - name: Grant execute permission for gradlew
-        working-directory: ./KudaGo
-        run: chmod +x ./gradlew
-
-      # Run JUnit tests
-      - name: Run Test
-        working-directory: ./KudaGo
-        run: ./gradlew test
-
       - id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
         if: ( github.event_name != 'workflow_dispatch' )
@@ -63,3 +40,4 @@ jobs:
           min-coverage-changed-files: 30
           title: Code Coverage
           update-comment: true
+
