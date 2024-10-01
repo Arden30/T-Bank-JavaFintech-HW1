@@ -14,7 +14,7 @@ val wiremockVersion: String by project
 val testcontainersVersion: String by project
 
 jacoco {
-	toolVersion = "0.8.0"
+	toolVersion = "0.8.12"
 }
 
 java {
@@ -72,20 +72,4 @@ tasks.jacocoTestReport {
 			}
 		})
 	)
-}
-
-tasks.jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			isEnabled = false
-			element = "CLASS"
-			includes = listOf("org.gradle.*")
-
-			limit {
-				counter = "LINE"
-				value = "TOTALCOUNT"
-				maximum = "0.7".toBigDecimal()
-			}
-		}
-	}
 }
