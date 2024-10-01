@@ -46,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new IdNotFoundException("Category with id = " + id + " not found");
         }
 
-        if (categoryRepository.update(category.id(), category) == null) {
+        if (categoryRepository.update(id, category) == null) {
             throw new CreationObjectException("Could not update category, because your input format is wrong, check again");
         }
 
