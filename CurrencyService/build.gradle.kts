@@ -32,6 +32,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core")
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
+    implementation("com.github.ben-manes.caffeine:caffeine")
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
