@@ -35,16 +35,19 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public CurrencyConvertResponse convertCurrency(CurrencyConvertRequest currencyConvertRequest) {
-        return readAndParseCurrencyRate().stream()
-                .filter(currency -> currency.id() != null && (currency.charCode().equals(currencyConvertRequest.fromCurrency()) || currency.charCode().equals(currencyConvertRequest.toCurrency())))
-                .map(currency -> Double.parseDouble(currency.value().replace(",", ".")) / currency.nominal())
-                .reduce((from, to) -> from / to * Double.parseDouble(currencyConvertRequest.amount()))
-                .map(convertedAmount -> CurrencyConvertResponse.builder()
-                        .fromCurrency(currencyConvertRequest.fromCurrency())
-                        .toCurrency(currencyConvertRequest.toCurrency())
-                        .convertedAmount(convertedAmount)
-                        .build())
-                .orElseThrow(RuntimeException::new);
+        List<CurrencyRateWithIDResponse> responseList = readAndParseCurrencyRate();
+        CurrencyRateWithIDResponse fromCurrency = responseList.stream().filter(currency -> currency.id() != null && currency.charCode().equals(currencyConvertRequest.fromCurrency())).findFirst().orElseThrow();
+        CurrencyRateWithIDResponse toCurrency = responseList.stream().filter(currency -> currency.id() != null && currency.charCode().equals(currencyConvertRequest.toCurrency())).findFirst().orElseThrow();
+
+        Double fromValue = Double.parseDouble(fromCurrency.value().replace(",", ".")) / fromCurrency.nominal();
+        Double toValue = Double.parseDouble(toCurrency.value().replace(",", ".")) / toCurrency.nominal();
+        Double convertedAmount = fromValue / toValue * Double.parseDouble(currencyConvertRequest.amount());
+
+        return CurrencyConvertResponse.builder()
+                .fromCurrency(currencyConvertRequest.fromCurrency())
+                .toCurrency(currencyConvertRequest.toCurrency())
+                .convertedAmount(convertedAmount)
+                .build();
     }
 
     private List<CurrencyRateWithIDResponse> readAndParseCurrencyRate() {
