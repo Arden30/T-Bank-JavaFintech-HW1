@@ -1,6 +1,5 @@
 package arden.java.currencyservice.api.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Builder;
@@ -19,7 +18,10 @@ public record CurrencyRateResponse(
             String charCode,
 
             @JacksonXmlProperty(localName = "Value")
-            String value
+            String value,
+
+            @JacksonXmlProperty(localName = "Nominal")
+            Integer nominal
     ) {
     }
 }

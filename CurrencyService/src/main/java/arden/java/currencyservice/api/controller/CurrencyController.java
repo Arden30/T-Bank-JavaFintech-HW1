@@ -19,8 +19,8 @@ public class CurrencyController {
         return ResponseEntity.ok(currencyService.getCurrencyRate(code));
     }
 
-    @PostMapping("/currencies/convert")
+    @PostMapping( "/convert")
     public ResponseEntity<CurrencyConvertResponse> convert(@RequestBody CurrencyConvertRequest request) {
-        return null;
+        return ResponseEntity.ok(currencyService.convertCurrency(request));
     }
 }
