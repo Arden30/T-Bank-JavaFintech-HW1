@@ -6,6 +6,12 @@ spring:
     caffeine:
       spec: maximumSize=100,expireAfterWrite=1h
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: circuitbreakers
+
 app:
   client:
     url: https://www.cbr.ru/scripts/XML_daily.asp
