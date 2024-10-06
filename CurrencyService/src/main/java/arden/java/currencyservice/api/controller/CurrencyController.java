@@ -4,6 +4,7 @@ import arden.java.currencyservice.api.dto.request.CurrencyConvertRequest;
 import arden.java.currencyservice.api.dto.response.CurrencyConvertResponse;
 import arden.java.currencyservice.api.dto.response.CurrencyRateResponse;
 import arden.java.currencyservice.service.CurrencyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,8 @@ public class CurrencyController {
         return ResponseEntity.ok(currencyService.getCurrencyRate(code));
     }
 
-    @PostMapping( "/convert")
-    public ResponseEntity<CurrencyConvertResponse> convert(@RequestBody CurrencyConvertRequest request) {
+    @PostMapping("/convert")
+    public ResponseEntity<CurrencyConvertResponse> convert(@RequestBody @Valid CurrencyConvertRequest request) {
         return ResponseEntity.ok(currencyService.convertCurrency(request));
     }
 }

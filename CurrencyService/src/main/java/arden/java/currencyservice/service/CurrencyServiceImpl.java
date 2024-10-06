@@ -5,13 +5,16 @@ import arden.java.currencyservice.api.dto.response.CurrencyConvertResponse;
 import arden.java.currencyservice.api.dto.response.CurrencyRateResponse;
 import arden.java.currencyservice.api.dto.response.CurrencyRateResponse.CurrencyRateWithIDResponse;
 import arden.java.currencyservice.clients.CurrencyWebClient;
+import arden.java.currencyservice.exception.CurrencyException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,25 +27,79 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     public CurrencyRateResponse getCurrencyRate(String code) {
-        return readAndParseCurrencyRate().stream()
-                .filter(currency -> currency.id() != null && currency.id().equals(code))
+        List<CurrencyRateWithIDResponse> responseList = readAndParseCurrencyRate();
+        validateCurrencyRequest(code);
+        log.info("Запрос на валюту валиден, начинаю обработку");
+
+        return responseList.stream()
+                .filter(currency -> currency.id() != null && currency.charCode().equals(code))
                 .map(currency -> CurrencyRateResponse.builder()
                         .rate(Double.valueOf(currency.value().replace(",", ".")))
                         .currency(currency.charCode())
                         .build())
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst().orElseThrow(() -> new CurrencyException("Валюта не найдена в базе ЦБ: " + code, HttpStatus.BAD_REQUEST));
     }
 
     @Override
     public CurrencyConvertResponse convertCurrency(CurrencyConvertRequest currencyConvertRequest) {
         List<CurrencyRateWithIDResponse> responseList = readAndParseCurrencyRate();
-        CurrencyRateWithIDResponse fromCurrency = responseList.stream().filter(currency -> currency.id() != null && currency.charCode().equals(currencyConvertRequest.fromCurrency())).findFirst().orElseThrow();
-        CurrencyRateWithIDResponse toCurrency = responseList.stream().filter(currency -> currency.id() != null && currency.charCode().equals(currencyConvertRequest.toCurrency())).findFirst().orElseThrow();
 
-        Double fromValue = Double.parseDouble(fromCurrency.value().replace(",", ".")) / fromCurrency.nominal();
-        Double toValue = Double.parseDouble(toCurrency.value().replace(",", ".")) / toCurrency.nominal();
-        Double convertedAmount = fromValue / toValue * Double.parseDouble(currencyConvertRequest.amount());
+        validateCurrencyRequest(currencyConvertRequest.fromCurrency());
+        validateCurrencyRequest(currencyConvertRequest.toCurrency());
 
+        Optional<CurrencyRateWithIDResponse> fromCurrency = responseList.stream().filter(currency -> currency.id() != null && currency.charCode().equals(currencyConvertRequest.fromCurrency())).findFirst();
+        Optional<CurrencyRateWithIDResponse> toCurrency = responseList.stream().filter(currency -> currency.id() != null && currency.charCode().equals(currencyConvertRequest.toCurrency())).findFirst();
+
+        CurrencyConvertResponse convertRub = convertRub(currencyConvertRequest, fromCurrency, toCurrency);
+        if (convertRub != null) {
+            return convertRub;
+        }
+
+        if (fromCurrency.isPresent() && toCurrency.isPresent()) {
+            Double fromValue = Double.parseDouble(fromCurrency.get().value().replace(",", ".")) / fromCurrency.get().nominal();
+            Double toValue = Double.parseDouble(toCurrency.get().value().replace(",", ".")) / toCurrency.get().nominal();
+            Double convertedAmount = fromValue / toValue * currencyConvertRequest.amount();
+
+            return buildCurrencyConvertResponse(currencyConvertRequest, convertedAmount);
+        } else {
+            if (fromCurrency.isEmpty()) {
+                throw new CurrencyException("Валюта не найдена в базе ЦБ: " + currencyConvertRequest.fromCurrency(), HttpStatus.NOT_FOUND);
+            } else {
+                throw new CurrencyException("Валюта не найдена в базе ЦБ: " + currencyConvertRequest.toCurrency(), HttpStatus.NOT_FOUND);
+            }
+        }
+    }
+
+    private void validateCurrencyRequest(String code) {
+        try {
+            Currency.getInstance(code);
+        } catch (IllegalArgumentException e) {
+            throw new CurrencyException("Валюты не существует: " + code, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private CurrencyConvertResponse convertRub(CurrencyConvertRequest currencyConvertRequest, Optional<CurrencyRateWithIDResponse> fromCurrency, Optional<CurrencyRateWithIDResponse> toCurrency) {
+        if (currencyConvertRequest.fromCurrency().equals("RUB") && currencyConvertRequest.toCurrency().equals("RUB")) {
+            return buildCurrencyConvertResponse(currencyConvertRequest, currencyConvertRequest.amount());
+        } else if (currencyConvertRequest.fromCurrency().equals("RUB")) {
+            return convertFromRubCurrency(currencyConvertRequest, toCurrency.get());
+        } else if (currencyConvertRequest.toCurrency().equals("RUB")) {
+            return convertToRubCurrency(currencyConvertRequest, fromCurrency.get());
+        }
+
+        return null;
+    }
+
+    private CurrencyConvertResponse convertFromRubCurrency(CurrencyConvertRequest currencyConvertRequest, CurrencyRateWithIDResponse toCurrency) {
+        return buildCurrencyConvertResponse(currencyConvertRequest, currencyConvertRequest.amount() / (Double.parseDouble(toCurrency.value().replace(",", ".")) / toCurrency.nominal()));
+    }
+
+    private CurrencyConvertResponse convertToRubCurrency(CurrencyConvertRequest currencyConvertRequest, CurrencyRateWithIDResponse fromCurrency) {
+        return buildCurrencyConvertResponse(currencyConvertRequest, Double.parseDouble(fromCurrency.value().replace(",", ".")) * currencyConvertRequest.amount());
+    }
+
+    private CurrencyConvertResponse buildCurrencyConvertResponse(CurrencyConvertRequest currencyConvertRequest, Double convertedAmount) {
+        log.info("Запрос на конвертацию обработан, собираю ответ");
         return CurrencyConvertResponse.builder()
                 .fromCurrency(currencyConvertRequest.fromCurrency())
                 .toCurrency(currencyConvertRequest.toCurrency())
@@ -51,18 +108,11 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     private List<CurrencyRateWithIDResponse> readAndParseCurrencyRate() {
-        Optional<String> currencyRateResponse = currencyRateWebClient.currencyRate();
         try {
-            if (currencyRateResponse.isPresent()) {
-                return xmlMapper.readValue(currencyRateResponse.get(), new TypeReference<>() {
-                });
-            } else {
-                log.error("Currency rate not found");
-                throw new RuntimeException("Currency rate not found");
-            }
+            return xmlMapper.readValue(currencyRateWebClient.currencyRate(), new TypeReference<>() {
+            });
         } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-            throw new RuntimeException();
+            throw new CurrencyException("Сервер вернул невалидный XML-файл", HttpStatus.BAD_REQUEST);
         }
     }
 }
