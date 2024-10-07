@@ -3,7 +3,9 @@ package arden.java.currencyservice.api.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
+@Builder
 @Schema(description = "DTO класс для запроса на конвертацию стоимости денег из одной валюты в другую")
 public record CurrencyConvertRequest(
         @Schema(description = "Код исходной валюты", example = "USD")

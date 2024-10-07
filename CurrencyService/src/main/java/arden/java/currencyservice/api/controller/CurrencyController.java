@@ -16,12 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Book;
-
 @RestController
 @RequestMapping("/api/v1/currencies")
 @RequiredArgsConstructor
-@Tag(name="Контроллер валют", description="Делает запросы к API ЦБ для получения информации по курсу валюты или осуществляет конвертацию денежной суммы из одной валюты в другую")
+@Tag(name = "Контроллер валют", description = "Делает запросы к API ЦБ для получения информации по курсу валюты или осуществляет конвертацию денежной суммы из одной валюты в другую")
 public class CurrencyController {
     private final CurrencyService currencyService;
 
@@ -31,8 +29,8 @@ public class CurrencyController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Курс найден",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CurrencyRateResponse.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CurrencyRateResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Валюты не существует",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Валюта не найдена в базе ЦБ",
@@ -46,8 +44,8 @@ public class CurrencyController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Курс найден",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = CurrencyConvertResponse.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CurrencyConvertResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Валюты не существует/Стоимость не может быть отрицательной",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Валюта не найдена в базе ЦБ",

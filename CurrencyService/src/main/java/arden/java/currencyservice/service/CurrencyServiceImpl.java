@@ -4,7 +4,7 @@ import arden.java.currencyservice.api.dto.request.CurrencyConvertRequest;
 import arden.java.currencyservice.api.dto.response.CurrencyConvertResponse;
 import arden.java.currencyservice.api.dto.response.CurrencyRateResponse;
 import arden.java.currencyservice.api.dto.response.CurrencyRateResponse.CurrencyRateWithIDResponse;
-import arden.java.currencyservice.clients.CurrencyWebClient;
+import arden.java.currencyservice.client.CurrencyWebClient;
 import arden.java.currencyservice.exception.CurrencyException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

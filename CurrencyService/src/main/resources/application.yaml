@@ -4,7 +4,7 @@ spring:
   cache:
     type: caffeine
     caffeine:
-      spec: maximumSize=100,expireAfterWrite=1h
+      spec: maximumSize=100, expireAfterWrite=1h
 
 management:
   endpoints:
@@ -14,13 +14,13 @@ management:
 
 app:
   client:
-    url: https://www.cbr.ru/scripts/XML_daily.asp
+    url: https://www.cbr.ru/scriфpts/XML_daily.asp
 
 resilience4j:
   circuitbreaker:
     instances:
-      external-system:
-        slidingWindowSize: 10
+      currencySystem:
+        slidingWindowSize: 5
         failureRateThreshold: 50
         permittedNumberOfCallsInHalfOpenState: 5
         waitDurationInOpenState: 10s
