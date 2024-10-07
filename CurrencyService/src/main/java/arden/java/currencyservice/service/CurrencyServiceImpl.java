@@ -37,7 +37,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                         .rate(Double.parseDouble(currency.value().replace(",", ".")) / currency.nominal())
                         .currency(currency.charCode())
                         .build())
-                .findFirst().orElseThrow(() -> new CurrencyException("Валюта не найдена в базе ЦБ: " + code, HttpStatus.BAD_REQUEST));
+                .findFirst().orElseThrow(() -> new CurrencyException("Валюта не найдена в базе ЦБ: " + code, HttpStatus.NOT_FOUND));
     }
 
     @Override
