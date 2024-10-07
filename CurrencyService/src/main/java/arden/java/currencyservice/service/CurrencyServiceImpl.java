@@ -34,7 +34,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         return responseList.stream()
                 .filter(currency -> currency.id() != null && currency.charCode().equals(code))
                 .map(currency -> CurrencyRateResponse.builder()
-                        .rate(Double.valueOf(currency.value().replace(",", ".")))
+                        .rate(Double.parseDouble(currency.value().replace(",", ".")) / currency.nominal())
                         .currency(currency.charCode())
                         .build())
                 .findFirst().orElseThrow(() -> new CurrencyException("Валюта не найдена в базе ЦБ: " + code, HttpStatus.BAD_REQUEST));
